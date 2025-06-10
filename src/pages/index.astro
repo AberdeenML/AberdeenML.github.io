@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning Group - University of Aberdeen</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e40af;
+            --secondary: #3b82f6;
+            --accent: #06b6d4;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --gradient: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #06b6d4 100%);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 70vh;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+			border-radius: 50px;
+			margin-top: 50px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+            z-index: 1;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+            animation: slideUp 1s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: slideUp 1s ease-out 0.2s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: white;
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            animation: slideUp 1s ease-out 0.4s both;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            transform: translateY(-100%);
+        }
+
+        nav.visible {
+            transform: translateY(0);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Sections */
+        section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+
+        /* Research Cards */
+        .research-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .research-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .research-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .research-card h3 {
+            color: var(--primary);
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .research-card p {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        /* Featured Research Section */
+        .featured-grid {
+            display: grid;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .featured-item {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .featured-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .featured-item.large {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 300px;
+        }
+
+        .featured-item.small {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .featured-visual {
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .featured-item.large .featured-visual {
+            min-height: 300px;
+        }
+
+        .featured-item.small .featured-visual {
+            height: 200px;
+        }
+
+        .featured-visual::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="white" opacity="0.1"><animate attributeName="opacity" values="0.1;0.3;0.1" dur="3s" repeatCount="indefinite"/></circle><circle cx="80" cy="30" r="1.5" fill="white" opacity="0.1"><animate attributeName="opacity" values="0.1;0.4;0.1" dur="2s" repeatCount="indefinite"/></circle><circle cx="60" cy="70" r="2.5" fill="white" opacity="0.1"><animate attributeName="opacity" values="0.1;0.2;0.1" dur="4s" repeatCount="indefinite"/></circle></svg>');
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .featured-content {
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .featured-badge {
+            display: inline-block;
+            background: rgba(30, 64, 175, 0.1);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            width: fit-content;
+        }
+
+        .featured-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .featured-item.large .featured-title {
+            font-size: 2rem;
+        }
+
+        .featured-description {
+            color: var(--gray);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .featured-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .featured-authors {
+            color: var(--primary);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .featured-date {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .featured-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .featured-link:hover {
+            color: var(--secondary);
+            transform: translateX(2px);
+        }
+
+        .featured-link::after {
+            content: '→';
+            transition: transform 0.3s ease;
+        }
+
+        .featured-link:hover::after {
+            transform: translateX(2px);
+        }
+
+        /* SUSTAIN CDT Section */
+        .sustain-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 30px;
+            margin: 2rem 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .sustain-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            padding: 4rem;
+        }
+
+        .sustain-text h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .sustain-text p {
+            color: var(--gray);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+		.research-link {
+			text-align: center;
+			margin-top: 2rem;
+		}
+
+		.research-link h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+			align: center;
+			text-align: center;
+            line-height: 1.3;
+        }
+
+        .sustain-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .sustain-feature {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .sustain-feature:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .sustain-feature h4 {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .sustain-feature p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .sustain-visual {
+            /* background: var(--gradient); */
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sustain-visual::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="sustain-grid" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M 8 0 L 0 0 0 8" fill="none" stroke="white" stroke-width="0.3" opacity="0.2"/></pattern></defs><rect width="100" height="100" fill="url(%23sustain-grid)"/></svg>');
+        }
+
+        .sustain-icon {
+            font-size: 4rem;
+            color: white;
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+            animation: sustainFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes sustainFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+
+        .sustain-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(30, 64, 175, 0.3);
+        }
+
+        .sustain-cta:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(30, 64, 175, 0.4);
+        }
+
+        .sustain-cta::after {
+            content: '→';
+            transition: transform 0.3s ease;
+        }
+
+        .sustain-cta:hover::after {
+            transform: translateX(2px);
+        }
+
+        @media (max-width: 768px) {
+            .sustain-content {
+                grid-template-columns: 1fr;
+                padding: 2rem;
+                gap: 2rem;
+            }
+            
+            .sustain-features {
+                grid-template-columns: 1fr;
+            }
+            
+            .sustain-visual {
+                min-height: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .featured-item.large {
+                grid-template-columns: 1fr;
+            }
+            
+            .featured-item.large .featured-visual {
+                min-height: 200px;
+            }
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .team-card {
+            text-align: center;
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .team-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gradient);
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .team-card h3 {
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .team-card p {
+            color: var(--gray);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            section {
+                padding: 3rem 1rem;
+            }
+            
+            .hero-content {
+                padding: 0 1rem;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">UoA ML Group</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#featured">Featured</a></li>
+                <li><a href="#sustain">SUSTAIN CDT</a></li>
+                <li><a href="#research">Research</a></li>
+                <li><a href="#team">Team</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>University of Aberdeen</h1>
+            <h1>Machine Learning Group</h1>
+
+            <p>Advancing artificial intelligence research at the University of Aberdeen through cutting-edge machine learning and data science</p>
+            <a href="#featured" class="cta-button">Explore Our Research</a>
+        </div>
+    </section>
+
+    <section id="featured" class="fade-in">
+        <h2>Featured Research</h2>
+        <div class="featured-grid">
+            <div class="featured-item large">
+                <div class="featured-visual">
+                    <img src="src/assets/equi-caps.png" alt="EquiCaps Research" style="width: 100%; height: 100%">
+                </div>
+                <div class="featured-content">
+                    <div class="featured-badge">Latest Research</div>
+                    <h3 class="featured-title">EquiCaps: Predictor-Free Pose-Aware Pre-Trained Capsule Networks</h3>
+                    <div class="featured-meta">
+                        <span class="featured-authors">Athinoulla Konstantinou, Georgios Leontidis, Mamatha Thota, and Aiden Durrant</span>
+                        <span class="featured-date">ArXiv Pre-Print </span>
+                    </div>
+                    <p class="featured-description">
+                        We present a novel approach to automatically discover optimal neural network architectures specifically designed for medical imaging tasks. Our method achieves state-of-the-art performance on multiple benchmarks while reducing computational requirements by 40%.
+                    </p>
+                    <a href="#" class="featured-link">Read Full Paper</a>
+                </div>
+            </div>
+
+			<div class="featured-item small">
+                <div class="featured-visual">
+					<img src="src/assets/hyperbolic.png" alt="BMVA Summer School Logo" style="width: 100%; height: auto; border-radius: 20px;">
+				</div>
+                <div class="featured-content">
+                    <div class="featured-badge">Workshop</div>
+                    <h3 class="featured-title">Beyond Euclidean: Hyperbolic and Hyperspherical Learning for Computer Vision</h3>
+                    <div class="featured-meta">
+                        <span class="featured-authors">Georgios Leontidis, Aiden Durrant, et al.</span>
+                        <span class="featured-date">ICCV 2025, Hawaii, October 2025</span>
+                    </div>
+                    <p class="featured-description">
+                        We are pleased to annouce that we will be hosting a full day workshop at ICCV 2025, bringing together researchers to uncover the principles of non-Euclidean representations.
+                    </p>
+                    <a href="https://sites.google.com/view/beyondeuclidean/home" class="featured-link">View webpage</a>
+                </div>
+            </div>
+            
+            <div class="featured-item small">
+                <div class="featured-visual">
+                    <img src="src/assets/cvss_logo_2025.png" alt="BMVA Summer School Logo" style="width: 35%; height: auto; border-radius: 20px;">
+                </div>
+                <div class="featured-content">
+                    <div class="featured-badge">Summmer School</div>
+                    <h3 class="featured-title">BMVA Computer Vision Summer School</h3>
+                    <div class="featured-meta">
+                        <span class="featured-authors">Georgios Leontidis, Aiden Durrant, Tryphon Lambrou, and Miles Everett, et al.</span>
+                        <span class="featured-date">University of Aberdeen, July 2025</span>
+                    </div>
+                    <p class="featured-description">
+                        Join us for an intensive week-long summer school focused on the latest advancements in computer vision. Featuring hands-on workshops, expert lectures, and networking opportunities with leading researchers in the field.
+                    </p>
+                    <a href="https://cvss.bmva.org" class="featured-link">View webpage</a>
+                </div>
+            </div>
+            
+            <div class="featured-item small">
+                <div class="featured-visual">
+                    <img src="src/assets/masked_caps_autoencoder.png" alt="Masked Capsule Autoencoders" style=" width: 100%; height: auto% ">
+                </div>
+                <div class="featured-content">
+                    <div class="featured-badge">Research Highlight</div>
+                    <h3 class="featured-title">Masked Capsule Autoencoders</h3>
+                    <div class="featured-meta">
+                        <span class="featured-authors">Miles Everett, Mingjun Zhong, and Georgios Leontidis</span>
+                        <span class="featured-date">Transactions on Machine Learning Research, 2025</span>
+                    </div>
+                    <p class="featured-description">
+                        Masked Capsule Autoencoders (MCAE), the first Capsule Network to use self-supervised masked image modelling as a pretraining method to significantly improve performance on complex, realistically sized images and achieve state-of-the-art results.
+                    </p>
+                    <a href="https://openreview.net/pdf?id=JHxrh00W1j" class="featured-link">Read Full Paper</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="sustain" class="fade-in">
+        <h2>SUSTAIN UKRI CDT</h2>
+        <div class="sustain-section">
+            <div class="sustain-content">
+                <div class="sustain-text">
+                    <h3>UKRI Centre for Doctoral Training - SUSTAIN </h3>
+					<p>
+                        The Sustainable Understandable agri-food Systems Transformed by Artificial INtelligence (SUSTAIN) CDT represents a groundbreaking partnership between  the Universities of Lincoln, Aberdeen, Queen’s Belfast and Strathclyde, and focuses on the application of Artificial Intelligence (AI) to sustainable agri-food.
+                    </p>
+                    
+                    <div class="sustain-features">
+                        <div class="sustain-feature">
+                            <h4>PhD Excellence</h4>
+                            <p>4-year fully funded PhD programs with industry partnerships</p>
+                        </div>
+                        <div class="sustain-feature">
+                            <h4>Green AI Focus</h4>
+                            <p>Research into energy-efficient and sustainable AI systems</p>
+                        </div>
+                        <div class="sustain-feature">
+                            <h4>Industry Links</h4>
+                            <p>Direct collaboration with leading agriculture, and agri-tech companies</p>
+                        </div>
+                        <div class="sustain-feature">
+                            <h4>Skills Training</h4>
+                            <p>Comprehensive technical and professional development</p>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+				<div class="sustain-text">
+                <div class="sustain-visual">
+					<img src="src/assets/Sustain-students.jpeg" alt="Sustain Student Cohort" style="width: 100%; height: 100%; border-radius: 20px;">
+				</div>
+				<br>
+				<p>
+                        Our students work on cutting-edge research that addresses real-world challenges 
+                        while ensuring AI development remains environmentally sustainable and socially responsible.
+                    </p>
+                    
+                    <a href="https://www.sustain-cdt.ai" class="sustain-cta">Learn More About SUSTAIN</a>
+				</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="research" class="fade-in">
+        <h2>Research Areas</h2>
+        <div class="research-grid">
+            <div class="research-card">
+                <h3>Computer Vision</h3>
+                <p>We build systems that see and understand the visual world. Our work involves creating novel neural network architectures for tasks in image recognition, object detection, and medical imaging analysis.</p>
+            </div>
+            <div class="research-card">
+                <h3>Time Series Analysis</h3>
+                <p>Our research focuses on developing advanced methods for forecasting and recognizing patterns in temporal data. We tackle challenges in energy, and environmental sensor data analysis.</p>
+            </div>
+            <div class="research-card">
+                <h3>Agriculture & Environment</h3>
+                <p>We apply machine learning to address critical challenges in sustainable agriculture and environmental science, including precision farming, crop yield prediction, and monitoring climate change.</p>
+            </div>
+            <div class="research-card">
+                <h3>Self-Supervised Learning</h3>
+                <p>We explore cutting-edge techniques that allow models to learn from vast amounts of unlabeled data, reducing the need for human annotation and creating more robust and generalizable AI systems.</p>
+            </div>
+            <div class="research-card">
+                <h3>Non-Euclidean Deep Learning</h3>
+                <p>We develop deep learning models that operate on non-Euclidean geometries, such as hyperbolic and hyperspherical spaces. Our research focuses on leveraging these unique geometric priors to more naturally understand hierarchical data and improve model performance on a variety of tasks.</p>
+            </div>
+            <div class="research-card">
+                <h3>Foundation Modelling</h3>
+                <p>We research and build large-scale foundation models that can be adapted to a wide array of downstream tasks. Our focus is on making these powerful models more efficient, controllable, and adaptable.</p>
+            </div>
+        </div>
+		<div class="research-link">
+		<h3> Check out our recent research outputs here: </h3>
+		<a href="publications" class="sustain-cta">Publications & Activites</a>
+		</div>
+    </section>
+
+    <section id="team" class="fade-in">
+        <h2>Our Team</h2>
+        <div class="team-grid">
+            <div class="team-card">
+                <div class="team-avatar">GL</div>
+                <h3>Prof. Georgios Leontidis</h3>
+                <p>Professorial Chair in Machine Learning</p>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">AD</div>
+                <h3>Dr. Aiden Durrant</h3>
+                <p>Assistant Professor Machine Learning</p>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">RP</div>
+                <h3>Rebecca Potts</h3>
+                <p>PhD Student</p>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">AL</div>
+                <h3>Andy Li</h3>
+                <p>PhD Student</p>
+            </div>
+			<div class="team-card">
+                <div class="team-avatar">MB</div>
+                <h3>Matthew Beddows</h3>
+                <p>PhD Student</p>
+            </div>
+			<div class="team-card">
+                <div class="team-avatar">AK</div>
+                <h3>Athinoulla Konstantinou</h3>
+                <p>PhD Student</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="fade-in">
+        <h2>Get In Touch</h2>
+        <div style="text-align: center; max-width: 600px; margin: 0 auto;">
+            <p style="font-size: 1.1rem; color: var(--gray); margin-bottom: 2rem;">
+                Interested in our research or potential collaboration? We'd love to hear from you.
+            </p>
+            <div style="background: white; border-radius: 20px; padding: 2rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);">
+                <p><strong>Email:</strong> georgios.leontidis@abdn.ac.uk || aiden.durrant@abdn.ac.uk </p>
+                <p><strong>Location:</strong> University of Aberdeen, Scotland</p>
+                <p><strong>Address:</strong> Computing Science Department<br>University of Aberdeen<br>Aberdeen AB24 3UE</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="https://www.abdn.ac.uk">University of Aberdeen</a>
+                <a href="publications">Publications & Activities</a>
+                <a href="#">Join Us</a>
+            </div>
+            <p>&copy; 2025 University of Aberdeen Machine Learning Group. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Show/hide navigation on scroll
+        let lastScrollTop = 0;
+        const navbar = document.getElementById('navbar');
+        
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > 100) {
+                navbar.classList.add('visible');
+            } else {
+                navbar.classList.remove('visible');
+            }
+            
+            lastScrollTop = scrollTop;
+        });
+
+        // Fade in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Add some interactive particles to hero section
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: absolute;
+                width: 4px;
+                height: 4px;
+                background: rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                pointer-events: none;
+                animation: particle-float 8s linear infinite;
+            `;
+            
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 8 + 's';
+            
+            document.querySelector('.hero').appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 8000);
+        }
+
+        // Create particles periodically
+        setInterval(createParticle, 1000);
+
+        // Add particle animation keyframes
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes particle-float {
+                0% {
+                    transform: translateY(100vh) scale(0);
+                    opacity: 0;
+                }
+                10% {
+                    opacity: 1;
+                }
+                90% {
+                    opacity: 1;
+                }
+                100% {
+                    transform: translateY(-100px) scale(1);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

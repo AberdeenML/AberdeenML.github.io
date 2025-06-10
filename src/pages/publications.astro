@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publications & Activities - University of Aberdeen ML Group</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1e40af;
+            --secondary: #3b82f6;
+            --accent: #06b6d4;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --light-gray: #f1f5f9;
+            --gradient: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #06b6d4 100%);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: var(--light);
+        }
+
+        /* Header */
+        header {
+            background: var(--gradient);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="white" stroke-width="0.3" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            position: absolute;
+            top: 2rem;
+            left: 2rem;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .back-link:hover {
+            transform: translateX(-3px);
+        }
+
+        /* Navigation Filters */
+        .filter-nav {
+            background: white;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .filter-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--light-gray);
+            color: var(--gray);
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 64, 175, 0.3);
+        }
+
+        .filter-btn .count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .section {
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 2rem;
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+
+        /* Publication Items */
+        .publication-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .publication-item {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--accent);
+            position: relative;
+        }
+
+        .publication-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .publication-type {
+            display: inline-block;
+            background: var(--light-gray);
+            color: var(--primary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .publication-type.journal { background: rgba(30, 64, 175, 0.1); color: var(--primary); }
+        .publication-type.conference { background: rgba(59, 130, 246, 0.1); color: var(--secondary); }
+        .publication-type.workshop { background: rgba(6, 182, 212, 0.1); color: var(--accent); }
+        .publication-type.tutorial { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+
+        .publication-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .publication-authors {
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .publication-venue {
+            color: var(--gray);
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .publication-abstract {
+            color: var(--gray);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .publication-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .publication-date {
+            background: var(--light-gray);
+            color: var(--gray);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .publication-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .pub-link {
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .pub-link:hover {
+            background: var(--secondary);
+            transform: translateY(-1px);
+        }
+
+        .pub-link.secondary {
+            background: var(--light-gray);
+            color: var(--gray);
+        }
+
+        .pub-link.secondary:hover {
+            background: var(--gray);
+            color: white;
+        }
+
+        /* Event Items */
+        .event-item {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--accent);
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .event-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .event-date {
+            background: var(--gradient);
+            color: white;
+            padding: 1rem;
+            border-radius: 15px;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .event-month {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .event-day {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .event-details h3 {
+            color: var(--dark);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-location {
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .event-description {
+            color: var(--gray);
+        }
+
+        .event-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin-bottom: 2rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid var(--light-gray);
+            border-radius: 50px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+
+        /* Statistics */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .back-link {
+                position: relative;
+                top: auto;
+                left: auto;
+                margin-bottom: 1rem;
+            }
+            
+            .filter-container {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+            
+            .event-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .container {
+                padding: 2rem 1rem;
+            }
+        }
+
+        /* Animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="#" class="back-link">← Back to Main Site</a>
+            <h1>Publications & Activities</h1>
+            <p>Comprehensive overview of our research outputs, presentations, and academic contributions</p>
+        </div>
+    </header>
+
+    <nav class="filter-nav">
+        <div class="filter-container">
+            <button class="filter-btn active" data-filter="all">All <span class="count">--</span></button>
+            <button class="filter-btn" data-filter="publications">Publications <span class="count">--</span></button>
+            <button class="filter-btn" data-filter="presentations">Presentations <span class="count">--</span></button>
+            <button class="filter-btn" data-filter="tutorials">Tutorials <span class="count">--</span></button>
+            <button class="filter-btn" data-filter="workshops">Workshops <span class="count">--</span></button>
+            <button class="filter-btn" data-filter="schools">Summer Schools <span class="count">--</span></button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search publications, authors, or keywords...">
+        </div>
+
+        <div class="stats-container fade-in">
+            <div class="stat-card">
+                <span id="total-pubs-stat" class="stat-number">--</span>
+                <div class="stat-label">Total Publications</div>
+            </div>
+            <div class="stat-card">
+                <span id="journal-stat" class="stat-number">--</span>
+                <div class="stat-label">Journal Papers</div>
+            </div>
+            <div class="stat-card">
+                <span id="papers-stat" class="stat-number">--</span>
+                <div class="stat-label">Conference Papers</div>
+            </div>
+            <div class="stat-card">
+                <span id="workshops-stat" class="stat-number">--</span>
+                <div class="stat-label">Workshops Led</div>
+            </div>
+        </div>
+
+        <div class="section fade-in" data-category="publications">
+            <h2 class="section-title">Recent Publications</h2>
+            <div class="publication-grid">
+
+
+                <!-- <div class="publication-item">
+                    <div class="publication-type journal">Journal Article</div>
+                    <h3 class="publication-title">Neural Architecture Search for Medical Imaging: A Comprehensive Survey</h3>
+                    <div class="publication-authors">A. Smith, M. Johnson, R. Wilson, J. Doe</div>
+                    <div class="publication-venue">Nature Machine Intelligence, Vol. 15, 2025</div>
+                    <p class="publication-abstract">
+                        This comprehensive survey examines the current state of neural architecture search (NAS) techniques specifically applied to medical imaging tasks. We analyze over 200 papers and provide insights into the most effective approaches for different medical imaging modalities.
+                    </p>
+                    <div class="publication-meta">
+                        <span class="publication-date">March 2025</span>
+                        <div class="publication-links">
+                            <a href="#" class="pub-link">PDF</a>
+                            <a href="#" class="pub-link secondary">Code</a>
+                            <a href="#" class="pub-link secondary">BibTeX</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="publication-item">
+                    <div class="publication-type conference">Conference Paper</div>
+                    <h3 class="publication-title">Explainable AI for Clinical Decision Support Systems</h3>
+                    <div class="publication-authors">R. Wilson, J. Doe, A. Smith</div>
+                    <div class="publication-venue">International Conference on Machine Learning (ICML) 2025</div>
+                    <p class="publication-abstract">
+                        We present a novel framework for creating explainable AI systems in clinical settings, focusing on transparency and trust in AI-driven medical decision making.
+                    </p>
+                    <div class="publication-meta">
+                        <span class="publication-date">July 2025</span>
+                        <div class="publication-links">
+                            <a href="#" class="pub-link">PDF</a>
+                            <a href="#" class="pub-link secondary">Slides</a>
+                            <a href="#" class="pub-link secondary">Video</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="publication-item">
+                    <div class="publication-type journal">Journal Article</div>
+                    <h3 class="publication-title">Attention Mechanisms for Long-term Time Series Forecasting</h3>
+                    <div class="publication-authors">J. Smith, M. Johnson, R. Brown</div>
+                    <div class="publication-venue">IEEE Transactions on Pattern Analysis and Machine Intelligence</div>
+                    <p class="publication-abstract">
+                        Novel attention-based models that significantly improve accuracy in long-term time series prediction across multiple domains including finance, weather, and energy consumption.
+                    </p>
+                    <div class="publication-meta">
+                        <span class="publication-date">February 2025</span>
+                        <div class="publication-links">
+                            <a href="#" class="pub-link">PDF</a>
+                            <a href="#" class="pub-link secondary">Code</a>
+                            <a href="#" class="pub-link secondary">Dataset</a>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+
+        <div class="section fade-in" data-category="presentations">
+            <h2 class="section-title">Recent Presentations</h2>
+            <div class="publication-grid">
+                <!-- <div class="event-item">
+                    <div class="event-date">
+                        <div class="event-month">JUN</div>
+                        <div class="event-day">15</div>
+                    </div>
+                    <div class="event-details">
+                        <h3>AI in Healthcare: Challenges and Opportunities</h3>
+                        <div class="event-location">Royal Society of Medicine, London</div>
+                        <div class="event-description">Keynote presentation on the current state and future prospects of AI applications in healthcare</div>
+                    </div>
+                    <div class="event-actions">
+                        <a href="#" class="pub-link">Slides</a>
+                        <a href="#" class="pub-link secondary">Video</a>
+                    </div>
+                </div>
+
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="event-month">MAY</div>
+                        <div class="event-day">20</div>
+                    </div>
+                    <div class="event-details">
+                        <h3>Neural Architecture Search: From Theory to Practice</h3>
+                        <div class="event-location">ICLR 2025, Vienna</div>
+                        <div class="event-description">Technical presentation on recent advances in automated neural network design</div>
+                    </div>
+                    <div class="event-actions">
+                        <a href="#" class="pub-link">Slides</a>
+                        <a href="#" class="pub-link secondary">Code</a>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+
+        <div class="section fade-in" data-category="tutorials">
+            <h2 class="section-title">Tutorials & Workshops</h2>
+            <div class="publication-grid">
+                
+                <!-- <div class="publication-item">
+                    <div class="publication-type tutorial">Tutorial</div>
+                    <h3 class="publication-title">Introduction to Explainable AI: Theory and Practice</h3>
+                    <div class="publication-authors">Dr. Wilson, Dr. Smith</div>
+                    <div class="publication-venue">AAAI 2025 Tutorial Session</div>
+                    <p class="publication-abstract">
+                        A comprehensive 3-hour tutorial covering the fundamentals of explainable AI, including LIME, SHAP, and gradient-based explanation methods with hands-on coding exercises.
+                    </p>
+                    <div class="publication-meta">
+                        <span class="publication-date">February 2025</span>
+                        <div class="publication-links">
+                            <a href="#" class="pub-link">Materials</a>
+                            <a href="#" class="pub-link secondary">Code</a>
+                            <a href="#" class="pub-link secondary">Recording</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="publication-item">
+                    <div class="publication-type workshop">Workshop</div>
+                    <h3 class="publication-title">Sustainable AI: Methods and Metrics</h3>
+                    <div class="publication-authors">SUSTAIN CDT Team</div>
+                    <div class="publication-venue">NeurIPS 2024 Workshop</div>
+                    <p class="publication-abstract">
+                        Half-day workshop focusing on developing and measuring sustainable AI systems, including energy-efficient training methods and carbon footprint assessment.
+                    </p>
+                    <div class="publication-meta">
+                        <span class="publication-date">December 2024</span>
+                        <div class="publication-links">
+                            <a href="#" class="pub-link">Website</a>
+                            <a href="#" class="pub-link secondary">Proceedings</a>
+                            <a href="#" class="pub-link secondary">Videos</a>
+                        </div>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+
+        <div class="section fade-in" data-category="schools">
+            <h2 class="section-title">Summer Schools</h2>
+            <div class="publication-grid">
+                <div class="event-item">
+                    <div class="event-date">
+                        <div class="event-month">Sep</div>
+                        <div class="event-day">07</div>
+                    </div>
+                    <div class="event-details">
+                        <h3>BMVA Computer Vision Summer School (CVSS)</h3>
+                        <div class="event-location">University of Aberdeen, Scotland</div>
+                        <div class="event-description">We are hosting the prestigious week-long British Machine Vision Association summer school on Computer Vision</div>
+                    </div>
+                    <div class="event-actions">
+                        <a href="https://cvss.bmva.org" class="pub-link">Website</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Wait for the DOM to be fully loaded before running scripts
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- Function to automatically calculate and update all counts ---
+            function updateAllCounts() {
+                // Select all items by category
+                const allPublicationItems = document.querySelectorAll('.publication-item');
+                const allEventItems = document.querySelectorAll('.event-item');
+                const allTutorialItems = document.querySelectorAll('.publication-type.tutorial');
+                const allWorkshopItems = document.querySelectorAll('.publication-type.workshop');
+                const allConferencePaperItems = document.querySelectorAll('.publication-type.conference');
+                const allJournalPaperItems = document.querySelectorAll('.publication-type.journal');
+                const allSummerSchoolItems = document.querySelectorAll('[data-category="schools"] .event-item');
+
+                // Calculate counts
+                const pubCount = allPublicationItems.length;
+                const presentationCount = allEventItems.length;
+                const tutorialCount = allTutorialItems.length;
+                const workshopCount = allWorkshopItems.length;
+                const conferencePaperCount = allConferencePaperItems.length;
+                const journalPaperCount = allJournalPaperItems.length;
+                const summerSchoolCount = allSummerSchoolItems.length;
+                const totalCount = pubCount + presentationCount + summerSchoolCount;
+                
+                // Update filter button counts
+                document.querySelector('.filter-btn[data-filter="all"] .count').textContent = totalCount;
+                document.querySelector('.filter-btn[data-filter="publications"] .count').textContent = pubCount;
+                document.querySelector('.filter-btn[data-filter="presentations"] .count').textContent = presentationCount;
+                document.querySelector('.filter-btn[data-filter="tutorials"] .count').textContent = tutorialCount;
+                document.querySelector('.filter-btn[data-filter="workshops"] .count').textContent = workshopCount;
+                document.querySelector('.filter-btn[data-filter="schools"] .count').textContent = summerSchoolCount;
+
+                // Update stats card numbers
+                document.getElementById('total-pubs-stat').textContent = pubCount;
+                document.getElementById('journal-stat').textContent = journalPaperCount;
+                document.getElementById('papers-stat').textContent = conferencePaperCount;
+                document.getElementById('workshops-stat').textContent = workshopCount;
+            }
+
+            // --- Call the function to populate counts on page load ---
+            updateAllCounts();
+
+
+            // --- EXISTING SCRIPT LOGIC (UNCHANGED) ---
+
+            // Filter functionality
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const sections = document.querySelectorAll('.section');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const filter = btn.dataset.filter;
+                    sections.forEach(section => {
+                        const category = section.dataset.category;
+                        // Special handling for tutorials and workshops which are in the same section
+                        if (filter === 'all' || filter === category) {
+                           section.style.display = 'block';
+                        } else if ((filter === 'tutorials' || filter === 'workshops') && category === 'tutorials') {
+                           section.style.display = 'block';
+                        } else {
+                           section.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            const allItems = document.querySelectorAll('.publication-item, .event-item');
+
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                
+                allItems.forEach(item => {
+                    // Make sure the item is part of a visible section first (respects filtering)
+                    const parentSection = item.closest('.section');
+                    if (parentSection.style.display !== 'none') {
+                        const text = item.textContent.toLowerCase();
+                        const matches = text.includes(searchTerm);
+                        // We hide the direct item instead of its parent grid cell
+                        item.style.display = matches ? '' : 'none'; // Use '' to revert to default display
+                    }
+                });
+            });
+
+            // Fade in animation on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Smooth scrolling for back link
+            document.querySelector('.back-link').addEventListener('click', (e) => {
+                e.preventDefault();
+                // You can modify this to actually go back to your main page
+                // For demonstration, it just uses browser history
+                window.history.back();
+            });
+        });
+    </script>
+</body>
+</html>
