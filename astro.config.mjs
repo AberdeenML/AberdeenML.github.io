@@ -3,6 +3,5 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-    site: 'https://AberdeenML.github.io',
-    base: '/AberdeenML.github.io',
+    site: 'https://AberdeenML.github.io'
 });
